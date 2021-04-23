@@ -49,27 +49,27 @@ void BenchmarkMalloc(size_t ntimes, size_t nworks, size_t rounds)
 
 
 
-void BenchmarkConcurrentMalloc(size_t ntimes, size_t nworks, size_t rounds)
+void BenchmarkMutexMalloc(size_t ntimes, size_t nworks, size_t rounds)
 {
 	std::vector<std::thread> vthread(nworks);
 	size_t malloc_costtime = 0;
 	size_t free_costtime = 0;
-	mempool::default_pool recycle;
+	MutexPool recycle;
 
 
 	for (size_t k = 0; k < nworks; ++k)
 	{
 		vthread[k] = std::thread([&]() {
-			mempool::default_alloc alloc(&recycle);
+			MutexAlloc alloc(&recycle);
 			void** v = (void**)malloc(sizeof(void*)*ntimes);
 			for (size_t j = 0; j < rounds; ++j)
 			{
-				int size = (rand() % 256);
+				//int size = (rand() % 256);
 			//	printf("size=%d\n", size);
 				size_t begin1 = clock();
 				for (size_t i = 0; i < ntimes; i++)
 				{
-					v[i] = NEW_ARRAY(alloc, char, size);
+					v[i] = NEW_ARRAY(alloc, char, 16);
 				}
 				size_t end1 = clock();
 
@@ -85,17 +85,60 @@ void BenchmarkConcurrentMalloc(size_t ntimes, size_t nworks, size_t rounds)
 		t.join();
 	}
 
-	printf("%lu个线程并发执行%lu轮次，每轮次concurrent malloc %lu次: 花费：%lu ms\n",
+	printf("%lu个线程并发执行%lu轮次，每轮次加锁 malloc %lu次: 花费：%lu ms\n",
+		nworks, rounds, ntimes, malloc_costtime);
+}
+
+void BenchmarkMpmcMalloc(size_t ntimes, size_t nworks, size_t rounds)
+{
+	std::vector<std::thread> vthread(nworks);
+	size_t malloc_costtime = 0;
+	size_t free_costtime = 0;
+	MpmcPool recycle;
+
+
+	for (size_t k = 0; k < nworks; ++k)
+	{
+		vthread[k] = std::thread([&]() {
+			MpmcAlloc alloc(&recycle);
+			void** v = (void**)malloc(sizeof(void*)*ntimes);
+			for (size_t j = 0; j < rounds; ++j)
+			{
+				//int size = (rand() % 256);
+			//	printf("size=%d\n", size);
+				size_t begin1 = clock();
+				for (size_t i = 0; i < ntimes; i++)
+				{
+					v[i] = NEW_ARRAY(alloc, char, 16);
+				}
+				size_t end1 = clock();
+
+
+				malloc_costtime += end1 - begin1;
+			}
+			free(v);
+			});
+	}
+
+	for (auto& t : vthread)
+	{
+		t.join();
+	}
+
+	printf("%lu个线程并发执行%lu轮次，每轮次无锁 malloc %lu次: 花费：%lu ms\n",
 		nworks, rounds, ntimes, malloc_costtime);
 }
 
 
 
 int main(){
-    srand((unsigned)time(NULL));
+//    srand((unsigned)time(NULL));
+//    printf("==============================================================================\n");
+    BenchmarkMalloc(1000, 16, 30);
     printf("==============================================================================\n");
-    BenchmarkMalloc(100, 16, 10);
-    printf("==============================================================================\n");
-    BenchmarkConcurrentMalloc(100, 16, 10);
+    BenchmarkMutexMalloc(1000, 16, 30);
+	printf("==============================================================================\n");
+    BenchmarkMpmcMalloc(1000, 16, 30);
+	while(1);
     return 0;
 }

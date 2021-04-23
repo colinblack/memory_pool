@@ -2,9 +2,7 @@
 #define CHUNK_POOL_HPP
 //线程安全的内存池，使用lock-free链表实现
 
-#include <atomic>
-#include <climits>
-#include "sys_alloc.hpp"
+
 
 
 namespace mempool{
@@ -124,7 +122,7 @@ private:
    }
 };
 
-typedef chunk_pool<sys_alloc> default_pool;
+
 
 }
 

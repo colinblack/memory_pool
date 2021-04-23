@@ -1,8 +1,7 @@
 #ifndef TYPE_TRAITS_HPP
 #define TYPE_TRAITS_HPP
 
-#include <cstdlib>
-#include "block_alloc.hpp"
+
 //支持没有构造函数的C类型
 
 //有构造和析构的类型使用placement new和显式析构

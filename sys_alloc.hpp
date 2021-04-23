@@ -1,8 +1,6 @@
 #ifndef SYS_ALLOC_HPP
 #define SYS_ALLOC_HPP
 
-#include <cstdlib>
-#include <malloc.h>
 
 #define SYS_MALLOC_SIZE 65536
 #define SYS_MALLOC_HEADER 16

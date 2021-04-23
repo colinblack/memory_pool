@@ -1,8 +1,6 @@
 #ifndef BLOCK_ALLOC_HPP
 #define BLOCK_ALLOC_HPP
 
-#include "chunk_pool.hpp"
-
 namespace mempool{
 
 typedef void (*destructor_t)(void*);
@@ -118,8 +116,6 @@ private:
 	}
 };
 
-
-typedef block_alloc<default_pool> default_alloc;
 }
 
 

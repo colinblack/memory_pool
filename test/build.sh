@@ -1,1 +1,1 @@
-g++ -O3 -I ../ test.cc -o test -lpthread
+g++  -O3 -I ../ test.cc -o test -lpthread
