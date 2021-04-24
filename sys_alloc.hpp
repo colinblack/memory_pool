@@ -12,8 +12,18 @@ namespace mempool{
 
 class sys_alloc{
 public:
-    static void* allocate(size_t n){return malloc(n);};
+    static void* allocate(size_t n){
+        void* p = nullptr;
+        if(posix_memalign(&p, alignof(size_t), 
+                          sizeof(size_t) * n) != 0){
+             throw std::bad_alloc();
+        }
+
+        //return malloc(n);
+        return p;        
+    };
     static void deallocate(void* p){
+        free(p);
     };
     static size_t alloc_size(void* p){
         return malloc_usable_size(p);

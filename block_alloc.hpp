@@ -38,7 +38,7 @@ private:
     */
     struct block{
       	block* prev;
-		    char buffer[BlockSize];
+		char buffer[BlockSize];
     };
 
     struct destory_node{
