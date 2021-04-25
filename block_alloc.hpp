@@ -10,7 +10,9 @@ template <typename PoolType>
 class block_alloc{
 public:
     block_alloc(PoolType* p)
-    : destroy_chain_(nullptr)
+    : begin_(nullptr)
+    , end_(nullptr)
+    , destroy_chain_(nullptr)
     , pool_(p){
         init();
     }      
@@ -46,9 +48,13 @@ private:
         destructor_t fn_destory;
     };
 
+    //可用内存块起始地址
     char* begin_;
+    //可用内存块结束地址
     char* end_;
+    //用于有析构函数的类型，只析构不释放内存
     destory_node* destroy_chain_;
+    //内存池
     PoolType* pool_;
 
 public:

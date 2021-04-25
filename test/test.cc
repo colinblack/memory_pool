@@ -138,10 +138,10 @@ int main(){
 //    BenchmarkMalloc(10000, 16, 30);
     printf("==============================================================================\n");
 //	sleep(20);
-    BenchmarkMpmcMalloc(10000, 16, 30);
+//    BenchmarkMpmcMalloc(10000, 16, 30);
 //	printf("==============================================================================\n");
 //	sleep(20);
-//	BenchmarkMutexMalloc(10000, 16, 30);
+	BenchmarkMutexMalloc(10000, 16, 30);
 
     while(1);
     return 0;

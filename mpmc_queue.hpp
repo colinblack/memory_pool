@@ -19,7 +19,7 @@ class queue{
 public:
     explicit queue()
         : slots_(nullptr), head_(0), tail_(0){
-          std::cout << capacity_ << "  " << bits_ << std::endl;
+     //     std::cout << capacity_ << "  " << bits_ << std::endl;
         if (capacity_ < 1) {
             throw std::invalid_argument("capacity < 1");
         }
