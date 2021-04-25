@@ -16,6 +16,7 @@
 #include "mutex_pool.hpp"
 
 #define NEW_ARRAY(alloc, Type, count)   mempool::array_factory<Type>::create(alloc, count)
+#define DELETE_ARRAY(Point, size)    mempool::array_factory<Type>::recycle(Point, size)
 
 typedef mempool::chunk_pool<mempool::sys_alloc> ChunkPool;
 typedef mempool::mpmc_pool<mempool::sys_alloc> MpmcPool;

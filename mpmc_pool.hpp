@@ -16,11 +16,11 @@ template <class AllocT>
 class mpmc_pool{ 
 public:
     mpmc_pool(int free_limit = INT_MAX)
-        : free_list_(){
+        : mpmc_queue_(){
  //         : free_list_(round_up(4096)){
         Chunk node = AllocT::allocate(chunk_size_);
         alloc_size_ = AllocT::alloc_size(node);
-        free_list_.push(node);
+        mpmc_queue_.push(node);
     }      
     ~mpmc_pool(){}
     mpmc_pool(const mpmc_pool&) = delete;
@@ -31,8 +31,7 @@ private:
 
     //自由链表
     typedef void* Chunk;
-    typedef mpmc::queue FreeList;
-    FreeList free_list_;
+    mpmc::queue  mpmc_queue_;
     //系统实际分配内存
     size_t alloc_size_;
 
@@ -43,7 +42,7 @@ public:
             return AllocT::allocate(n);
         }else{
             Chunk node = nullptr;
-            if(!free_list_.try_pop(node)){
+            if(!mpmc_queue_.try_pop(node)){
                 return AllocT::allocate(chunk_size_); 
             }
             return node;
@@ -53,7 +52,7 @@ public:
         if(AllocT::alloc_size(p) > alloc_size_){
             AllocT::deallocate(p);
         }else{
-           if(!free_list_.try_push(p)){
+           if(!mpmc_queue_.try_push(p)){
                AllocT::deallocate(p);
            }
         }
