@@ -32,7 +32,7 @@ private:
     chunk* free_list_;
  
     //自由链表节点数
-    std::atomic<int> node_count_;
+    int node_count_;
     //自由链表节点限制
     const int node_count_limit_ = 1;
     //系统实际分配内存
