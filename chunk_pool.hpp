@@ -2,9 +2,6 @@
 #define CHUNK_POOL_HPP
 //线程安全的内存池，使用lock-free链表实现
 
-
-
-
 namespace mempool{
 template <class AllocT>
 class chunk_pool{

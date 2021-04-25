@@ -19,7 +19,7 @@ void BenchmarkMalloc(size_t ntimes, size_t nworks, size_t rounds)
 
 			for (size_t j = 0; j < rounds; ++j)
 			{
-			//	int size = (rand() % 4096);
+//				int size = (rand() % 5000);
 				size_t begin1 = clock();
 				for (size_t i = 0; i < ntimes; i++)
 				{
@@ -65,7 +65,7 @@ void BenchmarkMutexMalloc(size_t ntimes, size_t nworks, size_t rounds)
 			void** v = (void**)malloc(sizeof(void*)*ntimes);
 			for (size_t j = 0; j < rounds; ++j)
 			{
-				//int size = (rand() % 256);
+			//	int size = (rand() % 5000);
 			//	printf("size=%d\n", size);
 				size_t begin1 = clock();
 				for (size_t i = 0; i < ntimes; i++)
@@ -107,7 +107,7 @@ void BenchmarkMpmcMalloc(size_t ntimes, size_t nworks, size_t rounds)
 			{
 				//int size = (rand() % 256);
 			//	printf("size=%d\n", size);
-				size_t begin1 = clock();
+		       		size_t begin1 = clock();
 				for (size_t i = 0; i < ntimes; i++)
 				{
 					v[i] = NEW_ARRAY(alloc, char, 16);
@@ -140,7 +140,7 @@ int main(){
 //	sleep(20);
 //    BenchmarkMpmcMalloc(10000, 16, 30);
 	printf("==============================================================================\n");
-	BenchmarkMutexMalloc(10000, 16, 30);
+      BenchmarkMutexMalloc(10000, 16, 30);
     while(1);
 
     return 0;
