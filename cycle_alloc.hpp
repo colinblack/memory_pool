@@ -28,11 +28,11 @@ private:
 		char buffer[BlockSize];
     };
 
-    struct trunk{
-        truck* next=nullptr;
+    struct chunk{
+        chunk* next=nullptr;
     };
 
-    trunk* free_list_[SYS_MALLOC_SIZE/ALIGNAS_SIZE]={nullptr};
+    chunk* free_list_[SYS_MALLOC_SIZE/ALIGNAS_SIZE]={nullptr};
 
 
     struct destory_node{
@@ -47,17 +47,26 @@ private:
     PoolType* pool_;
 
 public:
-    inline void* allocate(size_t n){
-		if ((size_t)(end_ - begin_) >= n)
-		{
-			return end_ -= n;
+    void* allocate(size_t n){
+		size_t bytes = round_up(n);
+		//先看自由链表里有没有空闲内存
+		chunk** l = free_list_ + freelist_index(bytes);
+		if(*l){
+			chunk* block = *l;
+			*l = block->next;
+			return block;
 		}
-		return do_allocate(n);
+
+		if ((size_t)(end_ - begin_) >= bytes)
+		{
+			return end_ -= bytes;
+		}
+		return do_allocate(bytes);
     }
 
     void recycle(void*p, size_t size){
         size_t index = freelist_index(size);
-        chunk* node = reinterpret_cast<chunk*>(p)
+        chunk* node = reinterpret_cast<chunk*>(p);
         node->next = free_list_[index];
         free_list_[index] = node;  
     }    
@@ -112,14 +121,19 @@ private:
 			block* node = (block*)pool_->allocate(sizeof(block));
 			node->prev = chain_header(begin_);
 			begin_ = node->buffer;
-			end_ = (char*)node + pool_->alloc_size(node);
+			//end_ = (char*)node + pool_->alloc_size(node); 很可能出现内存地址不是8的倍数
+			end_ = (char*)node + SYS_MALLOC_SIZE;
 			return end_ -= n;
 		}
 	}
 
     constexpr static size_t freelist_index(size_t bytes) {
         return (((bytes) + ALIGNAS_SIZE-1)>>ALIGNAS_BITS - 1);
-  }
+    }
+
+	constexpr static size_t round_up(size_t bytes){
+		return (bytes + ALIGNAS_SIZE-1) & ~(ALIGNAS_SIZE-1);
+	}
 };
 
 }

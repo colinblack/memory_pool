@@ -108,7 +108,8 @@ struct array_factory_no_destructor
 		return array;
 	}
 
-	void recycle(void* p, size_t size){
+    template <class AllocT>
+	static void recycle(AllocT& alloc, void* p, size_t size){
 		alloc.recycle(p, size);
 	}
 
