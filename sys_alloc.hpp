@@ -4,6 +4,8 @@
 
 #define SYS_MALLOC_SIZE 65536
 #define SYS_MALLOC_HEADER 16
+#define ALIGNAS_SIZE 8 //对齐字节必须是8倍数
+#define ALIGNAS_BITS 3 //2^3
 
 namespace mempool{
     constexpr static int MallocSize = SYS_MALLOC_SIZE;/*64k*/
